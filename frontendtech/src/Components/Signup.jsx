@@ -5,7 +5,6 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
   InputRightElement,
   Stack,
   Button,
@@ -16,25 +15,49 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-
+import axios from "axios";
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-  const [Password, setPassword] = useState('');
-  const [Password2, setPassword2] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [Password, setPassword] = useState("");
+  const [Password2, setPassword2] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
-  const handleSubmit = () => {
-    if(Password&&username&&email&& Password2){
-        if(Password ===Password2){
-           console.log(username,email,Password)
-            }
-            else{
-             alert(`password didn't match`)
-            }
+  const handleSubmit = async () => {
+    if (Password && username && email && Password2) {
+      if (Password === Password2) {
+        //    console.log(username,email,Password)
+        let userCred = {
+          username,
+          email,
+          password:Password,
+        };
+
+        let headersList = {
+          Accept: "*/*",
+          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+          "Content-Type": "application/json",
+        };
+
+        let bodyContent = JSON.stringify(userCred);
+
+        let reqOptions = {
+          url: "http://localhost:8080/auth/signup",
+          method: "POST",
+          headers: headersList,
+          data: bodyContent,
+        };
+
+        let response = await axios.request(reqOptions);
+        console.log(response.data);
+      } else {
+        alert(`password didn't match`);
+      }
     }
-
+    else{
+        alert(`fill all details`);
+    }
   };
   return (
     <Flex
@@ -62,18 +85,30 @@ export default function Signup() {
             <Box>
               <FormControl id="userName" isRequired>
                 <FormLabel>User Name</FormLabel>
-                <Input type="text" value={username} onChange={(e)=>setUsername(e.target.value)}/>
+                <Input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
               </FormControl>
             </Box>
 
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input value={Password} onChange={(e)=>setPassword(e.target.value)} type={showPassword ? "text" : "password"} />
+                <Input
+                  value={Password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}
@@ -89,7 +124,11 @@ export default function Signup() {
             <FormControl id="confirmpassword" isRequired>
               <FormLabel>Confirm Password</FormLabel>
               <InputGroup>
-                <Input value={Password2} onChange={(e)=>setPassword2(e.target.value)} type={showPassword2 ? "text" : "password"} />
+                <Input
+                  value={Password2}
+                  onChange={(e) => setPassword2(e.target.value)}
+                  type={showPassword2 ? "text" : "password"}
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}

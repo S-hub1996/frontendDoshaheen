@@ -1,5 +1,5 @@
 const {Router} = require("express")
-const User = require("../models/user")
+const User = require("./user")
 const jwt = require("jsonwebtoken")
 
 const authRouter = Router()
@@ -17,7 +17,7 @@ authRouter.post("/signup", (req,res)=>{
 
 authRouter.post("/login", async(req,res)=>{
     const {username, password} = req.body;
-    const validUser = await User.find({username, password});
+    const validUser = await User.find({username, password,email});
     if(validUser.length <1 || !validUser ){
         return res.status(401).send({message: "Invalid Credentials"})
     }
